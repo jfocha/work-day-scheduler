@@ -3,11 +3,12 @@ var currentDate = moment().format("dddd, MMMM Do");
 $("#currentDay").append(currentDate);
 
 // Add list items
-const timeArray = ["9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4pm", "5PM"];
+const timeArray = ["9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4PM", "5PM"];
+const hourNum = [9, 10, 11, 12, 13, 14, 15, 16, 17];
 
-var makeRow = function(timeNow) {
+var makeRow = function(timeNow, isPast) {
     // Make a row container
-    var row = $("<div class='row'></div>");
+    var row = $("<div id='" + timeNow + "'class='row'></div>");
     $(".container").append(row);
 
     // Make an hour
@@ -16,61 +17,30 @@ var makeRow = function(timeNow) {
     // Make description
     var descriptionText = $("<div class='description col-sm-10'></div>");
     // if -- check time, change class
+    if(check(isPast)) {
+        $("#" + timeNow).addClass("past");
+    } else {
+        $("#" + timeNow).addClass("future");
+    }
+    if(check(isPast) && !check(isPast + 1)) {
+        $("#" + timeNow).removeClass("past");
+        $("#" + timeNow).addClass("present");
+    }
 
     // Make button
     var submitButton = $("<div class='saveBtn col-sm-1'></div>");
 
-    $(".row").append(hourNow, descriptionText, submitButton);
+    $("#" + timeNow).append(hourNow, descriptionText, submitButton);
 }
 
-// for (let index = timeArray.length - 1; index >= 0; index--) {
-// for (let i = 0; i < 2; i++) {
-//     var rows = timeArray[i];
-//     makeRow(rows);
-// }
-    makeRow(timeArray[1]);
-    // makeRow(timeArray[2]);
-    // makeRow(timeArray[3]);
+for (let index = 0; index < timeArray.length; index++) {
+    makeRow(timeArray[index], index);
+}
 
-
-/* var table = $("<table></table>");
-$(".container").append(table);
-var tableRow = $("<tr></tr>");
-$("table").append(tableRow);
-for (let index = timeArray.length - 1; index >= 0; index--) {
-    var list = $("<td class='time-block hour'></td>").text(timeArray[index]);
-    $("tr").append(list);
+function check(hour) {
+    var now = moment();
+    var hourToCheck = (now.day() !== 0)?hourNum[hour]:00;
+    var dateToCheck = now.hour(hourToCheck).minute(30);
     
-}
- */
-
-/* // Add list items
-const timeArray = ["9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM", "4pm", "5PM"];
-
-//make one div class row
-$(".container").append("<div class='row'></div>");
-
-// make for loop of 2 to make columns
-//make two div class columns. First is 1 width. Second is 11 width
-var column1 = $("<div class='col-sm-3 hour'></div>");
-$(".row").append(column1);
-var timeContainer = $("<ul class='list-group list-group-flush'></ul>");
-$(".hour").append(timeContainer);
-for (let index = timeArray.length - 1; index >= 0; index--) {
-    var list = $("<li class='list-group-item'></li>").text(timeArray[index]);
-    $(".list-group-flush").append(list);
-    
-}
-
-var column2 = $("<div class='col-sm-9 text'></div>");
-$(".row").append(column2);
-var listContainer = $("<ul id='list-text' class='list-group'></ul>");
-$(".text").append(listContainer);
-// List Items. Include buttons?
-for (let index = timeArray.length - 1; index >= 0; index--) {
-    var list = $("<li class='list-group-item list-group-item-success'></li>").text("success");
-    $("#list-text").append(list);
-    
-}
-
- */
+    return moment().isAfter(dateToCheck);
+  }
