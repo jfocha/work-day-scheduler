@@ -1,7 +1,5 @@
 var pageContentEl = document.querySelector(".container");
 
-
-
 // Current date
 var currentDate = moment().format("dddd, MMMM Do");
 $("#currentDay").append(currentDate);
@@ -13,7 +11,7 @@ const hourNum = [9, 10, 11, 12, 13, 14, 15, 16, 17];
 function check(hour) {
     var now = moment();
     var hourToCheck = (now.day() !== 0)?hourNum[hour]:00;
-    if (!hourToCheck) {return false;}
+    if (!hourToCheck) {return true;}
     var dateToCheck = now.hour(hourToCheck).minute(00);
 
     return moment().isAfter(dateToCheck);
@@ -47,119 +45,45 @@ var makeRow = function(timeNow, isPast) {
     }
 
     // Make button
-    var submitButton = $("<div class='saveBtn col-sm-1'></div>");
+    var submitButton = $("<div data-id='" + isPast + "'class='saveBtn col-sm-1'></div>");
 
     $("#" + timeNow).append(hourNow, descriptionText, submitButton);
 }
     
+var saveSchedule = function (id) {
+    var temp = document.getElementById(id); 
+    console.log(temp.value);
+    var timeBlockText = temp.value;
+    if (timeBlockText !== "") {
+        localStorage.setItem("schedule" + id, timeBlockText);
+    }
+}
+
 var buttonHandler = function (event) {
     // get target element from event
     var targetEl = event.target;
     console.log(targetEl);
-    if (targetEl.matches(".description")) {
-        
-     /*    console.log("clicked");
-        // get current text of p element
-        var sel = $(this).parent();
-        console.log(sel);
-        var bar = sel.find('div').attr('id');
-        console.log(bar);
-        var text = $(sel).children("div.description").text();
-          console.log(text);
-      
-        // replace p element with a new textarea
-        var textInput = $("<p>").val(text);
-        $(this).replaceWith(textInput); */
-
-        // $(".description").on("click", "p", function() {
-        //     console.log("clicked");
-        //     // get current text of p element
-        //     var text = $(this)
-        //       .text()
-        //       .trim();
-          
-        //     // replace p element with a new textarea
-        //     var textInput = $("<p>").val(text);
-        //     $(this).replaceWith(textInput);
-          
-        //     // auto focus new element
-        //     // textInput.trigger("focus");
-        //   });
-
+    if (targetEl.matches(".saveBtn")) {
+        var id = targetEl.getAttribute("data-id");
+        console.log(id);
+        saveSchedule(id);
     }
-    // } else if (targetEl.matches("#correct")) {
-    //     questionIndex++;
-    //     getQuestion();
-    // } else if (targetEl.matches("#wrong")) {
-    //     sec = sec - 10;
-    //     questionIndex++;
-    //     getQuestion();
-    // }
 };
 
-// $(".description").on("click", function() {
-//     console.log("clicked");
-//     // get current text of p element
-//     var text = $(this)
-//       .text()
-//       .trim();
-  
-//     // replace p element with a new textarea
-//     var textInput = $("<p>").val(text);
-//     $(this).replaceWith(textInput);
-  
-//     // auto focus new element
-//     // textInput.trigger("focus");
-//   });
+var displaySchedule = function () {
+    for (let i = 0; i < timeArray.length; i++) {
+        var isThere = localStorage.getItem("schedule" + i);
+        if (isThere) {
+            document.getElementById(i).value = isThere;
+        } 
+        
+    }
+}
 
 pageContentEl.addEventListener("click", buttonHandler);
-
-
-// $(document).ready(function () {
-    
-//     $("#emp").click(function () {
-
-//             // $(".description_p").text();
-//                 // get current text of p element
-//     var text = $(this).val();
-//     //   .text()
-//     //   .trim();
-  
-//     // replace p element with a new textarea
-//     var textInput = $("#emp").val(text);
-//     $(this).replaceWith(textInput);
-  
-//     // auto focus new element
-//     // textInput.trigger("focus");
-
-//     })
-// });
-
-// task text was clicked
-// $(".description").on("click", "p", function() {
-//     // get current text of p element
-//     var text = $(this)
-//       .text()
-//       .trim();
-  
-//     // replace p element with a new textarea
-//     var textInput = $("p").val(text);
-//     $(this).replaceWith(textInput);
-  
-//     // auto focus new element
-//     textInput.trigger("focus");
-//   });
 
 for (let index = 0; index < timeArray.length; index++) {
     makeRow(timeArray[index], index);
 }
 
-
-
-
-
-
-    // var descriptionP = $("<p>")
-    // // .addClass("m-1")
-    // .text();
-    // $("#" + timeNow).children("div.description").append(descriptionP);
+displaySchedule();
