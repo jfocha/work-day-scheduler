@@ -54,9 +54,7 @@ var saveSchedule = function (id) {
     var temp = document.getElementById(id); 
     console.log(temp.value);
     var timeBlockText = temp.value;
-    if (timeBlockText !== "") {
-        localStorage.setItem("schedule" + id, timeBlockText);
-    }
+    localStorage.setItem("schedule" + id, timeBlockText);
 }
 
 var buttonHandler = function (event) {
@@ -76,7 +74,6 @@ var displaySchedule = function () {
         if (isThere) {
             document.getElementById(i).value = isThere;
         } 
-        
     }
 }
 
